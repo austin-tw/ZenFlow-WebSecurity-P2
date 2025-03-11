@@ -56,6 +56,10 @@ p {
   margin: 0 auto;
 }
 
+.red {
+  color: red;
+}
+
 /* ========== Nav Bar ======== */
 #nav-logo {
   width: 11rem;

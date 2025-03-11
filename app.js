@@ -154,17 +154,24 @@ const { ensureAuthenticated, ensureSuperUser } = require("./middlewares/auth");
 
 // Superuser-only route
 app.get("/super-dashboard", ensureSuperUser, (req, res) => {
-  res.send(
-    '<h1>Welcome to the Super User Dashboard!</h1><a href="/logout">Logout</a>'
-  );
+  res.render("super-dashboard", {
+    username: req.user.username,
+    role: req.user.role,
+  });
 });
 
 // Normal dashboard route (accessible to all authenticated users)
 app.get("/dashboard", ensureAuthenticated, (req, res) => {
-  res.send(
-    `Welcome ${req.user.username}! Role: ${req.user.role} <a href="/logout">Logout</a>`
-  );
+  res.render("dashboard", {
+    username: req.user.username,
+    role: req.user.role,
+  });
 });
+
+//   res.send(
+//     `Welcome ${req.user.username}! Role: ${req.user.role} <a href="/logout">Logout</a>`
+//   );
+// });
 
 //lab4--------------------------------------
 

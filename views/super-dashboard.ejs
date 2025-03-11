@@ -1,10 +1,10 @@
 <%- include('partials/header') %>
 
-    <body>
+    <>
         <img class="center" src="/img/run.jpg" alt="three people running">
 
         <h1>Welcome <%= username %>!</h1>
-        <h3>
+        <h3 class="red">
             Role:<%= role %>
         </h3>
         <a href="/logout">Logout</a>
@@ -26,8 +26,19 @@
                 <li>Updated goal "Tennis" 1 hour ago</li>
             </ul>
         </div>
-    </body>
 
-    </html>
+        <div>
+            <h2 class="red">System Settings</h2>
+            <ul>
+                <li><a href="#">Edit system configuration</a></li>
+                <li><a href="#">Backup database</a></li>
+                <li><a href="#">Restore database</a></li>
+                <li><a href="#">Delete database</a></li>
+            </ul>
+        </div>
 
-    <%- include('partials/footer') %>
+        </body>
+
+        </html>
+
+        <%- include('partials/footer') %>

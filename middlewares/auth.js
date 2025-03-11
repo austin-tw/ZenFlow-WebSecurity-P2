@@ -9,7 +9,7 @@ function ensureSuperUser(req, res, next) {
   if (req.isAuthenticated() && req.user.role === "superuser") {
     return next();
   }
-  res.status(403).send("Access denied: Super Users only.");
+  res.redirect("/error");
 }
 
 module.exports = { ensureAuthenticated, ensureSuperUser };
