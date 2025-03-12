@@ -15,16 +15,7 @@ const PORT = process.env.PORT || 3000;
 app.use(express.json());
 app.set("view engine", "ejs");
 
-//Lab5------------------------------
-// Database connection
-// mongoose
-//   .connect(process.env.DB_CONNECTION, {
-//     useNewUrlParser: true,
-//     useUnifiedTopology: true,
-//   })
-//   .then(() => console.log("Connected to MongoDB"))
-//   .catch((err) => console.error("Database connection error:", err));
-
+//------Lab5--------------↓↓↓↓↓↓↓↓↓↓
 // Session configuration
 app.use(
   session({
@@ -52,9 +43,19 @@ app.use((req, res, next) => {
   res.locals.csrfToken = req.csrfToken();
   next();
 });
-//Lab5------------------------------
+//-----------Lab5--------↑↑↑↑↑↑↑↑
 
-//lab4--------------------------------------
+// --------Middleware-----------
+app.use(bodyParser.json());
+// Helmet for securing HTTP headers
+app.use(helmet());
+app.use(express.static("public")); // Serves static files from "public" folder
+
+// Initialize Passport and session
+app.use(passport.initialize());
+app.use(passport.session());
+
+//------Lab4--------------↓↓↓↓↓↓↓↓↓↓
 // Connect to MongoDB
 mongoose
   .connect("mongodb://127.0.0.1:27017/google-sso", {
@@ -63,32 +64,9 @@ mongoose
   })
   .then(() => console.log("MongoDB connected successfully"))
   .catch((err) => console.error("MongoDB connection error:", err));
-//lab4--------------------------------------
-
-// Middleware/////////////////////
-app.use(bodyParser.json());
-// Helmet for securing HTTP headers
-app.use(helmet());
-app.use(express.static("public")); // Serves static files from "public" folder
-
-// Session configuration
-// app.use(
-//   session({
-//     secret: process.env.SESSION_SECRET,
-//     resave: false,
-//     saveUninitialized: false,
-//     cookie: { secure: false }, // Set to true in production
-//   })
-// );
-
-// Initialize Passport and session
-app.use(passport.initialize());
-app.use(passport.session());
 
 // User database (in-memory for this example)
 const users = {};
-
-//lab4--------------------------------------
 const User = require("./models/User");
 
 // Passport Google OAuth Strategy
@@ -130,7 +108,7 @@ passport.use(
     }
   )
 );
-//lab4--------------------------------------
+//-----------Lab4--------↑↑↑↑↑↑↑↑
 
 // Serialize and deserialize user
 passport.serializeUser((user, done) => done(null, user.id));
@@ -185,11 +163,6 @@ app.get("/error", (req, res) => {
   res.render("error");
 });
 
-// app.get("/dashboard", (req, res) => {
-//   res.render("dashboard", { username: req.user.username });
-// });
-
-//lab4--------------------------------------
 const { ensureAuthenticated, ensureSuperUser } = require("./middlewares/auth");
 
 // Superuser-only route
@@ -207,13 +180,6 @@ app.get("/dashboard", ensureAuthenticated, (req, res) => {
     role: req.user.role,
   });
 });
-
-//   res.send(
-//     `Welcome ${req.user.username}! Role: ${req.user.role} <a href="/logout">Logout</a>`
-//   );
-// });
-
-//lab4--------------------------------------
 
 // Start the server
 app.listen(PORT, () => {
