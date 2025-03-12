@@ -177,6 +177,10 @@ app.get("/signin", (req, res) => {
   res.render("signin");
 });
 
+app.get("/product", (req, res) => {
+  res.render("product");
+});
+
 app.get("/error", (req, res) => {
   res.render("error");
 });
