@@ -8,6 +8,9 @@ const passport = require("passport");
 const GoogleStrategy = require("passport-google-oauth20").Strategy;
 const helmet = require("helmet");
 const csrf = require("csurf");
+const https = require("https");
+const fs = require("fs");
+const hsts = require("hsts");
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -54,6 +57,21 @@ app.use(express.static("public")); // Serves static files from "public" folder
 // Initialize Passport and session
 app.use(passport.initialize());
 app.use(passport.session());
+
+// ----------P1--------------
+// Apply HSTS middleware
+const hstsOptions = {
+  maxAge: 31536000,
+  includeSubDomains: true,
+  preload: true,
+};
+app.use(hsts(hstsOptions));
+
+const cacheMiddleware = (req, res, next) => {
+  res.set("Cache-Control", "public, max-age=300, stale-while-revalidate=360");
+  next();
+};
+// ----------P1--------------
 
 //------Lab4--------------↓↓↓↓↓↓↓↓↓↓
 // Connect to MongoDB
@@ -125,7 +143,7 @@ passport.deserializeUser(async (id, done) => {
 });
 
 // Routes
-app.get("/", (req, res) => {
+app.get("/", cacheMiddleware, (req, res) => {
   res.render("index");
 });
 
