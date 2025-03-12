@@ -3,16 +3,56 @@ const express = require("express");
 const mongoose = require("mongoose");
 const bodyParser = require("body-parser");
 const session = require("express-session");
+const MongoStore = require("connect-mongo");
 const passport = require("passport");
 const GoogleStrategy = require("passport-google-oauth20").Strategy;
 const helmet = require("helmet");
+const csrf = require("csurf");
 
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-//?--------
 app.use(express.json());
 app.set("view engine", "ejs");
+
+//Lab5------------------------------
+// Database connection
+// mongoose
+//   .connect(process.env.DB_CONNECTION, {
+//     useNewUrlParser: true,
+//     useUnifiedTopology: true,
+//   })
+//   .then(() => console.log("Connected to MongoDB"))
+//   .catch((err) => console.error("Database connection error:", err));
+
+// Session configuration
+app.use(
+  session({
+    secret: process.env.SESSION_SECRET,
+    resave: false,
+    saveUninitialized: false,
+    store: MongoStore.create({
+      mongoUrl: process.env.DB_CONNECTION,
+      collectionName: "sessions",
+    }),
+    cookie: {
+      httpOnly: true, // Prevents JavaScript access
+      secure: false, // Set to true in production (requires HTTPS)
+      maxAge: 1000 * 60 * 15, // 15 minutes
+    },
+  })
+);
+
+// CSRF Protection
+const csrfProtection = csrf();
+app.use(csrfProtection);
+
+// Middleware to send CSRF token to client
+app.use((req, res, next) => {
+  res.locals.csrfToken = req.csrfToken();
+  next();
+});
+//Lab5------------------------------
 
 //lab4--------------------------------------
 // Connect to MongoDB
@@ -32,14 +72,14 @@ app.use(helmet());
 app.use(express.static("public")); // Serves static files from "public" folder
 
 // Session configuration
-app.use(
-  session({
-    secret: process.env.SESSION_SECRET,
-    resave: false,
-    saveUninitialized: false,
-    cookie: { secure: false }, // Set to true in production
-  })
-);
+// app.use(
+//   session({
+//     secret: process.env.SESSION_SECRET,
+//     resave: false,
+//     saveUninitialized: false,
+//     cookie: { secure: false }, // Set to true in production
+//   })
+// );
 
 // Initialize Passport and session
 app.use(passport.initialize());
