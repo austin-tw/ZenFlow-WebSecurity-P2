@@ -58,7 +58,7 @@ app.use(express.static("public")); // Serves static files from "public" folder
 app.use(passport.initialize());
 app.use(passport.session());
 
-// ----------P1--------------
+// ----------P1--------------↓↓↓↓↓↓↓↓↓↓
 // Apply HSTS middleware
 const hstsOptions = {
   maxAge: 31536000,
@@ -71,7 +71,7 @@ const cacheMiddleware = (req, res, next) => {
   res.set("Cache-Control", "public, max-age=300, stale-while-revalidate=360");
   next();
 };
-// ----------P1--------------
+// ----------P1--------------↑↑↑↑↑↑↑↑
 
 //------Lab4--------------↓↓↓↓↓↓↓↓↓↓
 // Connect to MongoDB
@@ -198,6 +198,34 @@ app.get("/dashboard", ensureAuthenticated, (req, res) => {
     role: req.user.role,
   });
 });
+
+// ------P1 Routes------↓↓↓↓↓↓↓↓↓↓
+app.get("/api/goals", cacheMiddleware, (req, res) => {
+  res.send("Showing wellness goals");
+});
+
+app.get("/api/goals/:id", cacheMiddleware, (req, res) => {
+  const goalId = req.params.id;
+  res.send(`Showing steps for goal No.${goalId}`);
+});
+
+// Sensitive user profile endpoint (no cache to protect sensitive user data)
+app.get("/api/user-profile", (req, res) => {
+  res.set("Cache-Control", "no-store");
+  res.send({ username: "Austin Lin", phone: "825-754-7566" });
+});
+
+// !! my POST and PUT routes do not have cache control, because they are to modify data, so not too much sense to cache them
+app.post("/api/goals", (req, res) => {
+  const newGoal = req.body;
+  res.send(`Added new goal: ${JSON.stringify(newGoal)}`);
+});
+
+app.put("/api/goals/:id/finish", (req, res) => {
+  const goalId = req.params.id;
+  res.send(`Goal No.${goalId} finished, awesome!`);
+});
+// ------P1 Routes------↑↑↑↑↑↑↑↑
 
 // Start the server
 app.listen(PORT, () => {
