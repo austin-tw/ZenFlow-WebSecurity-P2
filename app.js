@@ -177,7 +177,7 @@ app.get("/signin", (req, res) => {
   res.render("signin");
 });
 
-app.get("/product", (req, res) => {
+app.get("/product", cacheMiddleware, (req, res) => {
   res.render("product");
 });
 
