@@ -18,7 +18,6 @@ const PORT = process.env.PORT || 3000;
 app.use(express.json());
 app.set("view engine", "ejs");
 
-//------Lab5--------------↓↓↓↓↓↓↓↓↓↓
 // Session configuration
 app.use(
   session({
@@ -46,7 +45,6 @@ app.use((req, res, next) => {
   res.locals.csrfToken = req.csrfToken();
   next();
 });
-//-----------Lab5--------↑↑↑↑↑↑↑↑
 
 // --------Middleware-----------
 app.use(bodyParser.json());
@@ -58,7 +56,6 @@ app.use(express.static("public")); // Serves static files from "public" folder
 app.use(passport.initialize());
 app.use(passport.session());
 
-// ----------P1--------------↓↓↓↓↓↓↓↓↓↓
 // Apply HSTS middleware
 const hstsOptions = {
   maxAge: 31536000,
@@ -71,9 +68,7 @@ const cacheMiddleware = (req, res, next) => {
   res.set("Cache-Control", "public, max-age=300, stale-while-revalidate=360");
   next();
 };
-// ----------P1--------------↑↑↑↑↑↑↑↑
 
-//------Lab4--------------↓↓↓↓↓↓↓↓↓↓
 // Connect to MongoDB
 mongoose
   .connect("mongodb://127.0.0.1:27017/google-sso", {
@@ -126,7 +121,6 @@ passport.use(
     }
   )
 );
-//-----------Lab4--------↑↑↑↑↑↑↑↑
 
 // Serialize and deserialize user
 passport.serializeUser((user, done) => done(null, user.id));
@@ -203,7 +197,7 @@ app.get("/dashboard", ensureAuthenticated, (req, res) => {
   });
 });
 
-// ------P1 Routes------↓↓↓↓↓↓↓↓↓↓
+// ------Phase1 Routes------↓↓↓↓↓↓↓↓↓↓
 app.get("/api/goals", cacheMiddleware, (req, res) => {
   res.send("Showing wellness goals");
 });
@@ -229,7 +223,7 @@ app.put("/api/goals/:id/finish", (req, res) => {
   const goalId = req.params.id;
   res.send(`Goal No.${goalId} finished, awesome!`);
 });
-// ------P1 Routes------↑↑↑↑↑↑↑↑
+// ------Phase1 Routes------↑↑↑↑↑↑↑↑
 
 // Start the server
 app.listen(PORT, () => {
