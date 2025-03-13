@@ -1,3 +1,6 @@
+Bonus Marks:
++15 git commits with clear messages (1)
+
 # Setting Up the Repository
 
 ## Part A: Set Up Google OAuth Credentials
